@@ -30,6 +30,9 @@ RUN npm install
 # Step 5: Bundle app source inside Docker image
 COPY . .
 
+ARG VITE_BACKEND_URL
+ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
+
 # Step 6: Build the Vite project
 RUN npm run build
 
