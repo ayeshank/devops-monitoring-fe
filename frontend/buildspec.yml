@@ -4,26 +4,27 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - $(aws ecr get-login --no-include-email --region us-east-1)
-      - REPOSITORY_URI=public.ecr.aws/t3h1v0s4/monitoring-frontend-ecr
-      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - aws ecr get-login-password --region your-region | docker login --username AWS --password-stdin your-account-id.dkr.ecr.your-region.amazonaws.com
+      - export REPOSITORY_URI=public.ecr.aws/t3h1v0s4/monitoring-frontend-ecr
+      - export IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
 
   build:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - docker build -t $REPOSITORY_URI:$IMAGE4_TAG --build-arg VITE_BACKEND_URL=$VITE_BACKEND_URL .
+      - docker build -t $REPOSITORY_URI:$IMAGE_TAG --build-arg VITE_BACKEND_URL=$VITE_BACKEND_URLO
 
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
-      - docker push $REPOSITORY_INSERT_URI:$IMAGE_TAG
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file...
       - printf '[{"name":"frontend-app","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
 
 artifacts:
-  files: imagedefinitions.json
+  files:
+    - imagedefinitions.json
 
 env:
   variables:
