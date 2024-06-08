@@ -1,4 +1,4 @@
-name: Deploy to EC2 via Bastion Host
+name: Doyendev
 
 on:
   push:
