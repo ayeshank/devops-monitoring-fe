@@ -51,8 +51,8 @@ jobs:
         echo "${{ secrets.PRIVATE_EC2_SSH_KEY }}" > ec2_key.pem
         chmod 600 ec2_key.pem
 
-        ssh -i bastion_key.pem -o StrictHostKeyChecking=no $BASTION_USER@$BASTION_HOST << 'EOF'
-          ssh -i ~/.ssh/ayesha-terraform.pem -o StrictHostKeyChecking=no $PRIVATE_EC2_USER@$PRIVATE_EC2_HOST << 'EOI'
+        ssh -i bastion_key.pem -o StrictHostKeyChecking=no $BASTION_USER@$BASTION_HOST << EOF
+          ssh -i ~/.ssh/ayesha-terraform.pem -o StrictHostKeyChecking=no $PRIVATE_EC2_USER@$PRIVATE_EC2_HOST << EOI
             sudo docker pull $ECR_REPOSITORY:latest
             sudo docker stop frontend || true
             sudo docker rm frontend || true
