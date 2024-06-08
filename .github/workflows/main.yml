@@ -35,5 +35,28 @@ jobs:
         file: ./frontend/Dockerfile
         push: true
         tags: public.ecr.aws/t3h1v0s4/monitoring-frontend-ecr:latest
+        
+    - name: SSH into Bastion Host and deploy
+      env:
+        BASTION_HOST: ${{ secrets.BASTION_HOST }}
+        BASTION_USER: ${{ secrets.BASTION_USER }}
+        BASTION_SSH_KEY: ${{ secrets.BASTION_SSH_KEY }}
+        PRIVATE_EC2_USER: ${{ secrets.PRIVATE_EC2_USER }}
+        PRIVATE_EC2_HOST: ${{ secrets.PRIVATE_EC2_HOST }}
+        PRIVATE_EC2_SSH_KEY: ${{ secrets.PRIVATE_EC2_SSH_KEY }}
+        ECR_REPOSITORY: public.ecr.aws/t3h1v0s4/monitoring-frontend-ecr
+      run: |
+        echo "${{ secrets.BASTION_SSH_KEY }}" > bastion_key.pem
+        chmod 600 bastion_key.pem
+        echo "${{ secrets.PRIVATE_EC2_SSH_KEY }}" > ec2_key.pem
+        chmod 600 ec2_key.pem
 
+        ssh -i bastion_key.pem -o StrictHostKeyChecking=no $BASTION_USER@$BASTION_HOST << EOF
+          ssh -i ec2_key.pem -o StrictHostKeyChecking=no $PRIVATE_EC2_USER@$PRIVATE_EC2_HOST << EOI
+            sudo docker pull $ECR_REPOSITORY:latest
+            sudo docker stop your-container-name || true
+            sudo docker rm your-container-name || true
+            sudo docker run -d -p 4000:4000 -e --name your-container-name $ECR_REPOSITORY:latest
+          EOI
+        EOF
 
