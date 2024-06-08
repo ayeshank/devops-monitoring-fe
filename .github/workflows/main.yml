@@ -31,7 +31,7 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
       with:
-        context: .
+        context: ./frontend
         file: ./frontend/Dockerfile
         push: true
         tags: public.ecr.aws/t3h1v0s4/monitoring-frontend-ecr:latest
