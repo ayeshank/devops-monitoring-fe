@@ -52,7 +52,7 @@ jobs:
         chmod 600 ec2_key.pem
 
         ssh -i bastion_key.pem -o StrictHostKeyChecking=no $BASTION_USER@$BASTION_HOST << EOF
-          ssh -i ec2_key.pem -o StrictHostKeyChecking=no $PRIVATE_EC2_USER@$PRIVATE_EC2_HOST << EOI
+          ssh -i ~/.ssh/ayesha-terraform.pem -o StrictHostKeyChecking=no $PRIVATE_EC2_USER@$PRIVATE_EC2_HOST << EOI
             sudo docker pull $ECR_REPOSITORY:latest
             sudo docker stop your-container-name || true
             sudo docker rm your-container-name || true
