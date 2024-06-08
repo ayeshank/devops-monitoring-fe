@@ -54,9 +54,9 @@ jobs:
         ssh -i bastion_key.pem -o StrictHostKeyChecking=no $BASTION_USER@$BASTION_HOST << EOF
           ssh -i ~/.ssh/ayesha-terraform.pem -o StrictHostKeyChecking=no $PRIVATE_EC2_USER@$PRIVATE_EC2_HOST << EOI
             sudo docker pull $ECR_REPOSITORY:latest
-            sudo docker stop your-container-name || true
-            sudo docker rm your-container-name || true
-            sudo docker run -d -p 4000:4000 -e --name your-container-name $ECR_REPOSITORY:latest
+            sudo docker stop frontend || true
+            sudo docker rm frontend || true
+            sudo docker run -d -p 4000:4000 -e --name frontend $ECR_REPOSITORY:latest
           EOI
         EOF
 
